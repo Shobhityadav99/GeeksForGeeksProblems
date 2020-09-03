@@ -1,0 +1,55 @@
+class Solution
+{
+    public String findOrder(String [] dict, int N, int K)
+    {
+       alienLang g=new alienLang(K);
+       for(int i=0;i<N-1;i++){
+           String word1=dict[i];
+           String word2=dict[i+1];
+           for(int j=0;j<Math.min(word1.length(),word2.length());j++){
+               if(word1.charAt(j)!=word2.charAt(j))
+               g.addEdge(word1.charAt(j)-'a',word2.charAt(j)-'a');
+           }
+       }
+       String ans=g.TopoSort();
+    return ans;
+    }
+    
+}
+class alienLang{
+    int V;
+    LinkedList<Integer> adj[];
+    alienLang(int v){
+        V=v;
+        adj=new LinkedList[V];
+        for(int i=0;i<V;i++)
+        adj[i]=new LinkedList<Integer>();
+    }
+    void addEdge(int u,int v){
+        adj[u].add(v);
+    }
+    void ToposortUtil(int v,boolean visited[],Stack<Integer> stack){
+        visited[v]=true;
+        Iterator<Integer> it=adj[v].listIterator();
+        while(it.hasNext()){
+            int n=it.next();
+            if(!visited[n])
+            ToposortUtil(n,visited,stack);
+        }
+        stack.push(v);
+    }
+    String TopoSort(){
+        boolean visited[]=new boolean[V];
+        Arrays.fill(visited,false);
+        Stack<Integer> stack=new Stack<>();
+        for(int i=0;i<V;i++){
+            if(!visited[i])
+            ToposortUtil(i,visited,stack);
+        }
+        String ans="";
+        while(!stack.isEmpty()){
+            ans+=(char)('a'+stack.pop());
+        }
+        return ans;
+    }
+}
